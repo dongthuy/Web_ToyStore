@@ -107,7 +107,7 @@ const Cart = () => {
       <h2>Giỏ hàng của bạn</h2>
       {items.length === 0 ? (
         <div className="empty-order1">
-          <FaShoppingCart className="empty-icon" />
+          <FaShoppingCart className="empty-icon1" />
           <h3>Chưa có sản phẩm nào</h3>
           <p>Thêm sản phẩm để bắt đầu mua sắm</p>
         </div>

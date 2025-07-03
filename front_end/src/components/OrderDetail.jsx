@@ -19,31 +19,42 @@ const OrderDetail = () => {
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
+  const userId = localStorage.getItem("userId");
+
   axios.get(`http://localhost:5166/api/orders/${orderId}`)
-    .then((res) => {
-      setOrder(res.data);
+    .then(res => {
+      let orderData = res.data;
       setLoading(false);
 
-      if (!res.data.deliveryAddress) {
-        const userId = localStorage.getItem("userId");
-        axios.get(`http://localhost:5166/api/Address/user/${userId}`)
-          .then(addressRes => {
-            const defaultAddress = addressRes.data.find(a => a.status === 1 || a.status === "1");
-            if (defaultAddress) {
-              setOrder(prev => ({
-                ...prev,
-                deliveryAddress: `${defaultAddress.detail}, ${defaultAddress.street}, ${defaultAddress.ward}, ${defaultAddress.district}, ${defaultAddress.city}`
-              }));
-            }
-          });
+      if (!orderData.deliveryAddress) {
+        // Lấy địa chỉ mặc định từ localStorage thay vì gọi API địa chỉ
+        const defaultAddress = localStorage.getItem('defaultAddress');
+        if (defaultAddress) {
+          orderData.deliveryAddress = defaultAddress;
+        } 
+        // Hoặc bạn vẫn có thể fallback gọi API lấy địa chỉ mặc định nếu muốn
       }
+
+
+      // Lấy thông tin người dùng nếu chưa có trong order
+      axios.get(`http://localhost:5166/api/User/${userId}`)
+        .then(userRes => {
+          setOrder(prev => ({
+            ...prev,
+            receiverName: prev.receiverName || userRes.data.name,
+            receiverPhone: prev.receiverPhone || userRes.data.phoneNumber || userRes.data.phone
+          }));
+        })
+        .catch(err => {
+          console.error('Lỗi khi lấy thông tin người dùng:', err);
+        });
+    setOrder(orderData);
     })
-    .catch((err) => {
-      console.error('Lỗi khi tải chi tiết đơn hàng', err);
+    .catch(error => {
+      console.error('Lỗi khi tải chi tiết đơn hàng', error);
       setLoading(false);
     });
 }, [orderId]);
-
 
   if (loading) return <div style={{ padding: 20 }}>Đang tải dữ liệu đơn hàng...</div>;
   if (!order) return <div style={{ padding: 20 }}>Không tìm thấy đơn hàng.</div>;
@@ -92,7 +103,7 @@ useEffect(() => {
             <p><strong>Người nhận:</strong> {order.receiverName}</p>
             <p><strong>SĐT:</strong> {order.receiverPhone}</p>
             <p><strong>Địa chỉ nhận hàng:</strong> {order.deliveryAddress}</p>
-            <p><strong>Phương thức thanh toán:</strong> {order.paymentMethod || "Chưa cập nhật"}</p>
+            <p><strong>Phương thức thanh toán:</strong> {order.paymentMethod || "Thanh toán khi nhận hàng"}</p>
           </div>
 
           {/* Danh sách sản phẩm */}

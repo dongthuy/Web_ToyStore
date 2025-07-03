@@ -8,10 +8,9 @@ const AccountSidebar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('userId');
-    navigate('/login');
-  };
-
+  localStorage.clear(); 
+  navigate('/login', { replace: true });
+};
   return (
     <div className="profile-sidebar">
       <h2>Tài khoản của tôi</h2>
@@ -22,7 +21,7 @@ const AccountSidebar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink Add commentMore actions
+          <NavLink 
           to="/address" 
           state={{
             name: JSON.parse(localStorage.getItem("user"))?.name || '',
@@ -40,7 +39,9 @@ const AccountSidebar = () => {
         </li>
         <li>
           <div onClick={handleLogout} className="logout-link">
-            <FaSignOutAlt className="sidebar-icon" /> Đăng xuất </div>
+          <FaSignOutAlt className="sidebar-icon" /> Đăng xuất
+        </div>
+
         </li>
       </ul>
     </div>

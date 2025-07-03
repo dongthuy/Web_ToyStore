@@ -123,11 +123,12 @@
   padding: 60px 0;
 }
 
-.empty-order1 .empty-icon {
+.empty-order1 .empty-icon1 {
   font-size: 3rem;
   margin-bottom: 1rem;
   opacity: 0.6;
 }
+
 
 /* 💰 Giá sản phẩm có giảm giá */
 .discounted-price {

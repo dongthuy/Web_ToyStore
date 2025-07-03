@@ -204,16 +204,23 @@
 
 
 .empty-order {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 2rem;
   color: #666;
+  height: 20vh; 
+  text-align: center;
 }
-
 
 .empty-order .empty-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
   opacity: 0.6;
+  display: block; 
+  margin-left: auto;
+  margin-right: auto;
 }
 
 

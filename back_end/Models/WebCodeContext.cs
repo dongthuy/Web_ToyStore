@@ -1064,7 +1064,8 @@ namespace back_end.Models;
             entity.Property(e => e.IsNotify)
                 .HasDefaultValue(false)
                 .HasColumnName("notify");
-            //entity.Property(e => e.Department)
+            //entity.Property(e => e.
+            //)
             //    .HasMaxLength(50)
             //    .IsUnicode(false)
              //   .HasColumnName("phong_ban");

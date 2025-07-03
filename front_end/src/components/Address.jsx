@@ -8,29 +8,28 @@ import './Address.css';
 
 const Address = () => {
 const userId = localStorage.getItem("userId");
-
 const location = useLocation();
-const userInfo = location.state || {
-};
+const userInfo = location.state || {};
 
 const [addresses, setAddresses] = useState([]);
 const [editingAddress, setEditingAddress] = useState(null);
-
 const fetchAddresses = async () => {
 console.log("userId in Address.jsx:", userId);
 const res = await axios.get(`http://localhost:5166/api/Address/user/${userId}`);
-
-    setAddresses(res.data);
+setAddresses(res.data);
   };
 
 const [isEditing, setIsEditing] = useState(false);
 const [isFormEnabled, setIsFormEnabled] = useState(false);
 
+//Sửa địa chỉ
 const handleEdit = (addr) => {
   setEditingAddress(addr);
   setIsEditing(true);
   setIsFormEnabled(true); // bật form
 };
+
+//Thêm địa chỉ
 const [isAddingNew, setIsAddingNew] = useState(false);
 const handleAddNew = () => {
   setEditingAddress(null);  // reset form
@@ -39,6 +38,7 @@ const handleAddNew = () => {
   setIsAddingNew(true); // tránh tự set lại address mặc định
 };
 
+//Reset lại form, không cho phép sửa
 const handleCancel = () => {
   setEditingAddress(null);
   setIsEditing(false);
@@ -56,14 +56,15 @@ const handleSelectAddress = (addr) => {
   useEffect(() => {
   if (addresses.length > 0 && editingAddress === null && !isAddingNew) {
     const defaultAddr = addresses.find(a => a.status);
-    if (defaultAddr) {
-      setEditingAddress(defaultAddr);
-    }
+  if (defaultAddr) {
+    setEditingAddress(defaultAddr);
   }
+}
 }, [addresses, editingAddress, isAddingNew]);
 
-  useEffect(() => { if (userId) fetchAddresses(); }, [userId]);
+useEffect(() => { if (userId) fetchAddresses(); }, [userId]);
 
+  //Lưu địa chỉ 
   const handleSave = async (data) => {
   try {
     if (editingAddress) {
@@ -85,6 +86,7 @@ const handleSelectAddress = (addr) => {
   }
 };
 
+//Xoá địa chỉ 
   const handleDelete = async (addr) => {
   if (addr.status === 1 || addr.status === true || addr.status === "1") {
     alert("Không thể xoá địa chỉ mặc định!");
@@ -102,6 +104,7 @@ const handleSelectAddress = (addr) => {
   }
 };
 
+//Đặt mặc định
   const handleSetDefault = async (id) => {
     await axios.put(`http://localhost:5166/api/Address/set-default/${userId}/${id}`);
     fetchAddresses();
@@ -120,7 +123,7 @@ const handleSelectAddress = (addr) => {
               <p>Chưa có địa chỉ nào.</p>
             ) : (
               addresses.map((addr) => {
-                const isDefault = addr.status === 1 || addr.status === "1";
+                const isDefault = addr.status === true || addr.status === 1 || addr.status === "1";
 
                 return (
                   <div
@@ -142,7 +145,11 @@ const handleSelectAddress = (addr) => {
                       <button onClick={(e) => { e.stopPropagation(); handleDelete(addr); }}>
                         <FaTrash />
                       </button>
-                      <button className={`star-button ${isDefault ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); handleSetDefault(addr.addressId); }}>
+                      <button
+                        className={`star-button ${isDefault ? 'active' : ''}`}
+                        title="Đặt làm mặc định"
+                        onClick={(e) => { e.stopPropagation(); if (!isDefault) handleSetDefault(addr.addressId); }}
+                      >
                         {isDefault ? <FaStar /> : <FaRegStar />}
                       </button>
                     </div>

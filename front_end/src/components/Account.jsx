@@ -36,9 +36,12 @@ const Account = () => {
           name: data.name || '',
           birthday: data.birthday || '',
           address: data.address || '',
-          phone: data.phone || '',  
+          phoneNumber: data.phone || '',  
           email: data.email || ''
         });
+         if(data.address) {
+          localStorage.setItem('defaultAddress', data.address);
+        }
       })
       .catch(err => console.error(err));
   }

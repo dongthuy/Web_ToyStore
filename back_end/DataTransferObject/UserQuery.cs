@@ -2,6 +2,5 @@
 
 public class UserQuery : BaseQuery
 {
-    public string? Department { get; set; }
     public bool? Status { get; set; }
 }

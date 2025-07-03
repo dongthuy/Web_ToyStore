@@ -15,7 +15,7 @@ namespace back_end.DataTransferObject
         public bool IsSeller { get; set; }
         
         public bool Status { get; set; } = true;
-        public string Department { set; get; }
+
 
         // Thông tin lưu vào bảng user_details
         public string Name { get; set; }
